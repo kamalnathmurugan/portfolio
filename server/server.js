@@ -24,6 +24,8 @@ const transporter = nodemailer.createTransport({
 app.post('/api/contact', async (req, res) => {
   try {
     const { name, email, phone, message } = req.body;
+    
+    console.log('Received contact form submission:', { name, email, phone });
 
     // Validate required fields
     if (!name || !email || !message) {
@@ -36,11 +38,15 @@ app.post('/api/contact', async (req, res) => {
     // Check if email credentials are configured
     if (!process.env.EMAIL_PASS || process.env.EMAIL_PASS === 'your_gmail_app_password_here') {
       console.log('Email not configured, simulating success');
+      console.log('EMAIL_USER:', process.env.EMAIL_USER);
+      console.log('EMAIL_PASS configured:', !!process.env.EMAIL_PASS);
       return res.status(200).json({
         success: true,
         message: 'Message received! (Email service not configured)'
       });
     }
+
+    console.log('Attempting to send email...');
 
     // Email content
     const mailOptions = {
@@ -77,6 +83,7 @@ app.post('/api/contact', async (req, res) => {
 
     // Send email
     await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully!');
 
     res.status(200).json({
       success: true,
