@@ -13,20 +13,16 @@ app.use(express.urlencoded({ extended: true }));
 
 // Email transporter configuration
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false, // use STARTTLS
+  service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER || 'kamalnath.muruga@gmail.com',
     pass: process.env.EMAIL_PASS || 'ovmi wxpi hjys jxcp'
   },
-  tls: {
-    rejectUnauthorized: false,
-    minVersion: 'TLSv1.2'
-  },
-  connectionTimeout: 20000, // 20 seconds
-  greetingTimeout: 20000,
-  socketTimeout: 30000
+  debug: true, // show debug output
+  logger: true, // log information in console
+  connectionTimeout: 10000, // 10 seconds
+  greetingTimeout: 10000,
+  socketTimeout: 15000
 });
 
 // Verify transporter configuration
@@ -53,7 +49,13 @@ app.post('/api/contact', async (req, res) => {
       });
     }
 
-    // Try to send email
+    // Respond immediately to the user to avoid "loading for long time"
+    res.status(200).json({
+      success: true,
+      message: 'Message received! We will get back to you soon.'
+    });
+
+    // Send email in the background
     try {
       const mailOptions = {
         from: process.env.EMAIL_USER || 'kamalnath.muruga@gmail.com',
@@ -70,24 +72,14 @@ app.post('/api/contact', async (req, res) => {
       };
       
       await transporter.sendMail(mailOptions);
-      console.log('Email sent successfully!');
-      
-      res.status(200).json({
-        success: true,
-        message: 'Message sent successfully!'
-      });
+      console.log('Email sent successfully in background!');
       
     } catch (emailError) {
-      console.error('Nodemailer Error:', {
+      console.error('Nodemailer Background Error:', {
         message: emailError.message,
         code: emailError.code,
         command: emailError.command,
-        response: emailError.response,
-        stack: emailError.stack
-      });
-      res.status(200).json({
-        success: true,
-        message: 'Message received! (Email delivery pending)'
+        response: emailError.response
       });
     }
 
