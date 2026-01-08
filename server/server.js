@@ -13,10 +13,24 @@ app.use(express.urlencoded({ extended: true }));
 
 // Email transporter configuration
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER || 'kamalnath.muruga@gmail.com',
     pass: process.env.EMAIL_PASS || 'ovmi wxpi hjys jxcp'
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+
+// Verify transporter configuration
+transporter.verify(function(error, success) {
+  if (error) {
+    console.log('Transporter verification error:', error);
+  } else {
+    console.log('Server is ready to take our messages');
   }
 });
 
@@ -39,7 +53,7 @@ app.post('/api/contact', async (req, res) => {
     try {
       const mailOptions = {
         from: process.env.EMAIL_USER || 'kamalnath.muruga@gmail.com',
-        to: 'kamalnath.muruga@gmail.com',
+        to: process.env.EMAIL_TO || 'kamalnath.muruga@gmail.com',
         subject: `Portfolio Contact - ${name}`,
         html: `
           <h2>New Contact Form Submission</h2>
@@ -60,7 +74,13 @@ app.post('/api/contact', async (req, res) => {
       });
       
     } catch (emailError) {
-      console.log('Email failed, but form submitted:', emailError.message);
+      console.error('Nodemailer Error:', {
+        message: emailError.message,
+        code: emailError.code,
+        command: emailError.command,
+        response: emailError.response,
+        stack: emailError.stack
+      });
       res.status(200).json({
         success: true,
         message: 'Message received! (Email delivery pending)'

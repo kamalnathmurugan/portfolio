@@ -75,8 +75,8 @@ const Index = () => {
     setSubmitMessage('');
 
     try {
-      // Use actual Render deployment URL
-      const apiUrl = 'https://portfolio1-xph6.onrender.com/api/contact';
+      // Use environment variable or default to Render URL
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://portfolio1-xph6.onrender.com/api/contact';
         
       const response = await fetch(apiUrl, {
         method: 'POST',
