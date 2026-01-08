@@ -2,13 +2,6 @@
   publish = "dist"
   command = "npm run build"
 
-[[forms]]
-  name = "contact"
-
-[forms.contact.settings]
-  to = "kamalnath.muruga@gmail.com"
-  subject = "New Portfolio Contact Form Submission"
-
 [[redirects]]
   from = "/*"
   to = "/index.html"
