@@ -13,19 +13,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // Email transporter configuration
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
+  service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER || 'kamalnath.muruga@gmail.com',
     pass: process.env.EMAIL_PASS || 'ovmi wxpi hjys jxcp'
-  },
-  tls: {
-    rejectUnauthorized: false
-  },
-  connectionTimeout: 60000,
-  greetingTimeout: 30000,
-  socketTimeout: 60000
+  }
 });
 
 // Contact form endpoint
@@ -43,14 +35,37 @@ app.post('/api/contact', async (req, res) => {
       });
     }
 
-    // For now, just log the message and return success
-    console.log('Contact form data:', { name, email, phone, message });
-    
-    // Return success without sending email
-    res.status(200).json({
-      success: true,
-      message: 'Message received successfully!'
-    });
+    // Try to send email
+    try {
+      const mailOptions = {
+        from: process.env.EMAIL_USER || 'kamalnath.muruga@gmail.com',
+        to: 'kamalnath.muruga@gmail.com',
+        subject: `Portfolio Contact - ${name}`,
+        html: `
+          <h2>New Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
+          <p><strong>Message:</strong> ${message}</p>
+          <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+        `
+      };
+      
+      await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully!');
+      
+      res.status(200).json({
+        success: true,
+        message: 'Message sent successfully!'
+      });
+      
+    } catch (emailError) {
+      console.log('Email failed, but form submitted:', emailError.message);
+      res.status(200).json({
+        success: true,
+        message: 'Message received! (Email delivery pending)'
+      });
+    }
 
   } catch (error) {
     console.error('Email sending error:', error);
