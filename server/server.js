@@ -1,10 +1,13 @@
 const express = require('express');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Initialize Resend with API Key
+const resend = new Resend(process.env.RESEND_API_KEY || 're_95h5KmYf_KJ4tkwdQKn7n7wHwGZQx5CVu');
 
 // Middleware
 app.use(cors());
@@ -13,40 +16,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Debug environment variables (without showing secrets)
 console.log('--- Email Service Environment Check ---');
-console.log('EMAIL_USER:', process.env.EMAIL_USER ? 'Configured' : 'Using default');
-console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? 'Configured' : 'Using default');
-console.log('EMAIL_TO:', process.env.EMAIL_TO ? 'Configured' : 'Using default');
+console.log('RESEND_API_KEY:', process.env.RESEND_API_KEY ? 'Configured' : 'NOT CONFIGURED');
+console.log('EMAIL_TO:', process.env.EMAIL_TO || 'kamalnath.muruga@gmail.com');
 console.log('---------------------------------------');
-
-// Email transporter configuration
-const transporter = nodemailer.createTransport({
-  host: 'smtp.googlemail.com', // Alternate host often more reliable on cloud providers
-  port: 587,
-  secure: false, // use STARTTLS
-  auth: {
-    user: process.env.EMAIL_USER || 'kamalnath.muruga@gmail.com',
-    pass: process.env.EMAIL_PASS || 'ovmi wxpi hjys jxcp'
-  },
-  debug: true,
-  logger: true,
-  family: 4,
-  connectionTimeout: 30000, // Increase to 30s
-  greetingTimeout: 30000,
-  socketTimeout: 45000,
-  tls: {
-    // Do not fail on invalid certs
-    rejectUnauthorized: false
-  }
-});
-
-// Verify transporter configuration
-transporter.verify(function(error, success) {
-  if (error) {
-    console.log('Transporter verification error:', error);
-  } else {
-    console.log('Server is ready to take our messages');
-  }
-});
 
 // Contact form endpoint
 app.post('/api/contact', async (req, res) => {
@@ -69,10 +41,10 @@ app.post('/api/contact', async (req, res) => {
       message: 'Message received! We will get back to you soon.'
     });
 
-    // Send email in the background
+    // Send email in the background using Resend HTTP API
     try {
-      const mailOptions = {
-        from: process.env.EMAIL_USER || 'kamalnath.muruga@gmail.com',
+      const { data, error } = await resend.emails.send({
+        from: 'Portfolio Contact <onboarding@resend.dev>',
         to: process.env.EMAIL_TO || 'kamalnath.muruga@gmail.com',
         subject: `Portfolio Contact - ${name}`,
         html: `
@@ -83,27 +55,26 @@ app.post('/api/contact', async (req, res) => {
           <p><strong>Message:</strong> ${message}</p>
           <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
         `
-      };
-      
-      await transporter.sendMail(mailOptions);
-      console.log('Email sent successfully in background!');
-      
-    } catch (emailError) {
-      console.error('Nodemailer Background Error:', {
-        message: emailError.message,
-        code: emailError.code,
-        command: emailError.command,
-        response: emailError.response,
-        stack: emailError.stack
       });
+
+      if (error) {
+        console.error('Resend API Error:', error);
+      } else {
+        console.log('Email sent successfully via Resend:', data.id);
+      }
+      
+    } catch (resendError) {
+      console.error('Resend Background Error:', resendError);
     }
 
   } catch (error) {
-    console.error('Email sending error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to send message. Please try again.'
-    });
+    console.error('Form processing error:', error);
+    if (!res.headersSent) {
+      res.status(500).json({
+        success: false,
+        message: 'Failed to process message.'
+      });
+    }
   }
 });
 
