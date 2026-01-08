@@ -14,15 +14,19 @@ app.use(express.urlencoded({ extended: true }));
 // Email transporter configuration
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
+  port: 587,
+  secure: false, // use STARTTLS
   auth: {
     user: process.env.EMAIL_USER || 'kamalnath.muruga@gmail.com',
     pass: process.env.EMAIL_PASS || 'ovmi wxpi hjys jxcp'
   },
   tls: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+    minVersion: 'TLSv1.2'
+  },
+  connectionTimeout: 20000, // 20 seconds
+  greetingTimeout: 20000,
+  socketTimeout: 30000
 });
 
 // Verify transporter configuration
