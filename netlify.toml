@@ -1,1 +1,15 @@
-[build]\n  publish = \"dist\"\n  command = \"npm run build\"\n\n[[forms]]\n  name = \"contact\"\n  \n[forms.contact.settings]\n  to = \"kamalnath.muruga@gmail.com\"\n  subject = \"New Portfolio Contact Form Submission\"\n  \n[[redirects]]\n  from = \"/*\"\n  to = \"/index.html\"\n  status = 200
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+[[forms]]
+  name = "contact"
+
+[forms.contact.settings]
+  to = "kamalnath.muruga@gmail.com"
+  subject = "New Portfolio Contact Form Submission"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
