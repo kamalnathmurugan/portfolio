@@ -75,8 +75,8 @@ const Index = () => {
     setSubmitMessage('');
 
     try {
-      // Use production API URL
-      const apiUrl = 'https://portfolioemail.com/api/contact';
+      // Use actual Render deployment URL
+      const apiUrl = 'https://portfolio1-xph6.onrender.com/api/contact';
         
       const response = await fetch(apiUrl, {
         method: 'POST',
