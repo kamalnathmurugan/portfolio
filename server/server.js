@@ -12,12 +12,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Email transporter configuration
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
+const transporter = nodemailer.createTransporter({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER || 'kamalnath.muruga@gmail.com',
     pass: process.env.EMAIL_PASS || 'ovmi wxpi hjys jxcp'
-  }
+  },
+  tls: {
+    rejectUnauthorized: false
+  },
+  connectionTimeout: 60000,
+  greetingTimeout: 30000,
+  socketTimeout: 60000
 });
 
 // Contact form endpoint
