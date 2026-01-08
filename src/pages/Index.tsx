@@ -75,10 +75,8 @@ const Index = () => {
     setSubmitMessage('');
 
     try {
-      // Dynamic API URL - use custom domain for production, localhost for development
-      const apiUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://portfolioemail.com/api/contact'
-        : 'http://localhost:3001/api/contact';
+      // Use production API URL
+      const apiUrl = 'https://portfolioemail.com/api/contact';
         
       const response = await fetch(apiUrl, {
         method: 'POST',
