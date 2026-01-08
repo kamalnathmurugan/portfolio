@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription,
+  DialogFooter
+} from "@/components/ui/dialog";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -33,6 +41,115 @@ const Index = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
+
+  interface ProjectDetail {
+    title: string;
+    tech: string[];
+    description: string;
+    details: string[];
+    github?: string;
+    demo?: string;
+    website?: string;
+    extraLink?: { label: string; url: string };
+  }
+
+  const [selectedProject, setSelectedProject] = useState<ProjectDetail | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const projectsData: Record<string, ProjectDetail> = {
+    bookstore: {
+      title: "Bookstore Application",
+      tech: ['React.js', 'Node.js', 'MongoDB', 'Express.js'],
+      description: "A complete bookstore e-commerce platform with robust features for both customers and administrators.",
+      details: [
+        "User authentication & authorization using JWT",
+        "Comprehensive book catalog with search, filter, and category sorting",
+        "Shopping cart and order management system",
+        "Admin panel for inventory management and order tracking",
+        "Responsive design for seamless mobile and desktop experience",
+        "Optimized database queries for high performance"
+      ],
+      github: "https://github.com/kamalnathmurugan/bookstore",
+      demo: "#"
+    },
+    ecommerce: {
+      title: "Ecommerce Shopez",
+      tech: ['React.js', 'Redux', 'Node.js', 'Stripe API'],
+      description: "A modern, scalable e-commerce platform designed for high-volume retail and secure transactions.",
+      details: [
+        "Advanced product catalog with category management",
+        "Secure payment gateway integration with Stripe",
+        "User profile management and real-time order history tracking",
+        "Mobile-first responsive design using Tailwind CSS/Bootstrap",
+        "Redux for efficient state management across the application",
+        "Multi-vendor support architecture"
+      ],
+      github: "https://github.com/kamalnathmurugan/ecommerceshopez",
+      demo: "#"
+    },
+    broadspectrum: {
+      title: "BroadSpectrum & Bijlipay",
+      tech: ['Node.js', 'MongoDB', 'Payment APIs'],
+      description: "Enterprise-grade data integration platform that unified multi-channel payment and finance data.",
+      details: [
+        "Unification of multi-channel payment and finance data",
+        "Improved data processing throughput by 40%",
+        "Achieved 100% compliance with payment industry regulations",
+        "Increased operational transparency by 35%",
+        "Real-time transaction monitoring and reporting",
+        "Scalable microservices architecture"
+      ],
+      website: "https://www.bijlipay.co.in/",
+      extraLink: { label: "BDP Ghana", url: "https://bdp.com.gh/" }
+    },
+    paytm: {
+      title: "Paytm Insurance Platform",
+      tech: ['React.js', 'Node.js', 'OAuth 2.0', 'JWT'],
+      description: "Centralized insurance management system integrated with Paytm's ecosystem for secure policy administration.",
+      details: [
+        "Centralized PPI customer data management for insurance services",
+        "Automated regulatory reporting systems for compliance",
+        "Secure customer data processing with OAuth 2.0 and JWT",
+        "Comprehensive policy administration and claims management workflow",
+        "Enhanced code maintainability across multiple integrated modules",
+        "Streamlined regulatory compliance processes"
+      ],
+      website: "https://paytminsurance.co.in/"
+    },
+    micole: {
+      title: "Micole School Platform",
+      tech: ['APIs', 'MongoDB', 'Server Optimization'],
+      description: "Comprehensive education technology platform connecting schools, parents, and students.",
+      details: [
+        "Extensive school directory with search and comparison tools",
+        "Online admission application system for streamlined enrollment",
+        "Secure parent-school communication portal",
+        "Integrated document management system for educational records",
+        "Significant performance optimization reducing load times",
+        "Resolved critical architectural issues for better scalability"
+      ],
+      website: "https://www.micole.net/"
+    },
+    hartford: {
+      title: "Hartford Insurance",
+      tech: ['Insurance Systems', 'Customer Management', 'Compliance'],
+      description: "US project focusing on the Insurance Cancellation process and customer complaint management.",
+      details: [
+        "Handled US insurance cancellation requests and backend processing",
+        "Logged and tracked customer complaints internally for resolution",
+        "Identified and rejected duplicate complaints to maintain data integrity",
+        "Ensured compliance with insurance industry standards and company policies",
+        "Coordinated with US-based stakeholders for process improvements",
+        "Maintained high accuracy in documentation and records management"
+      ],
+      website: "https://www.thehartford.com/"
+    }
+  };
+
+  const openProjectDetails = (projectKey: string) => {
+    setSelectedProject(projectsData[projectKey]);
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -530,7 +647,7 @@ const Index = () => {
                     size="sm" 
                     variant="outline" 
                     className="border-green-300/30 text-green-300 hover:bg-green-300/10"
-                    onClick={() => window.open('#bookstore-readme', '_blank')}
+                    onClick={() => openProjectDetails('bookstore')}
                   >
                     📖 README
                   </Button>
@@ -591,7 +708,7 @@ const Index = () => {
                     size="sm" 
                     variant="outline" 
                     className="border-blue-300/30 text-blue-300 hover:bg-blue-300/10"
-                    onClick={() => window.open('#ecommerce-readme', '_blank')}
+                    onClick={() => openProjectDetails('ecommerce')}
                   >
                     📖 README
                   </Button>
@@ -664,7 +781,7 @@ const Index = () => {
                     size="sm" 
                     variant="outline" 
                     className="border-purple-300/30 text-purple-300 hover:bg-purple-300/10"
-                    onClick={() => window.open('#broadspectrum-readme', '_blank')}
+                    onClick={() => openProjectDetails('broadspectrum')}
                   >
                     📖 README
                   </Button>
@@ -728,7 +845,7 @@ const Index = () => {
                     size="sm" 
                     variant="outline" 
                     className="border-orange-300/30 text-orange-300 hover:bg-orange-300/10"
-                    onClick={() => window.open('#paytm-readme', '_blank')}
+                    onClick={() => openProjectDetails('paytm')}
                   >
                     📖 README
                   </Button>
@@ -792,7 +909,71 @@ const Index = () => {
                     size="sm" 
                     variant="outline" 
                     className="border-cyan-300/30 text-cyan-300 hover:bg-cyan-300/10"
-                    onClick={() => window.open('#micole-readme', '_blank')}
+                    onClick={() => openProjectDetails('micole')}
+                  >
+                    📖 README
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Project 6 - Hartford Insurance (EXL) */}
+            <Card className="glass-dark border-white/20 hover:border-pink-300/50 transition-all duration-300">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <img 
+                      src="https://www.thehartford.com/favicon.ico" 
+                      alt="Hartford Logo" 
+                      className="w-8 h-8"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        const nextElement = target.nextElementSibling as HTMLElement;
+                        target.style.display = 'none';
+                        if (nextElement) nextElement.style.display = 'block';
+                      }}
+                    />
+                    <Award className="w-8 h-8 text-pink-300" style={{display: 'none'}} />
+                  </div>
+                  <Badge className="bg-pink-600/20 text-pink-300">Operations</Badge>
+                </div>
+                <CardTitle className="text-white">Hartford Insurance</CardTitle>
+                <CardDescription className="text-white/70">
+                  Exl Service • May 2017 - May 2018
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-white/80 mb-4">
+                  US-based insurance project focusing on high-volume cancellation processing and 
+                  systematic complaint management.
+                </p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {['Insurance Systems', 'Customer Management', 'Compliance'].map((tech) => (
+                    <Badge key={tech} variant="outline" className="border-pink-300/30 text-pink-300">
+                      {tech}
+                    </Badge>
+                  ))}
+                </div>
+                <ul className="text-sm text-white/70 space-y-1">
+                  <li>• US insurance cancellation processing</li>
+                  <li>• Internal complaint logging & resolution</li>
+                  <li>• Duplicate complaint identification</li>
+                </ul>
+                <div className="mt-4 flex space-x-2">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="border-pink-300/30 text-pink-300 hover:bg-pink-300/10"
+                    onClick={() => window.open('https://www.thehartford.com/', '_blank')}
+                  >
+                    <ExternalLink className="w-4 h-4 mr-1" />
+                    Live Site
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="border-pink-300/30 text-pink-300 hover:bg-pink-300/10"
+                    onClick={() => openProjectDetails('hartford')}
                   >
                     📖 README
                   </Button>
@@ -831,6 +1012,12 @@ const Index = () => {
                     role: 'Process Advisor',
                     company: 'Kelly Services - Barclays (Chennai)',
                     description: 'Provided payment protection insurance advisory with 98% satisfaction rate'
+                  },
+                  {
+                    period: 'May 2017 - May 2018',
+                    role: 'Customer Service Executive',
+                    company: 'Exl Service Private Limited (Chennai)',
+                    description: 'Handled US insurance cancellation processes and internal complaint management for Hartford Insurance'
                   }
                 ].map((exp, index) => (
                   <div key={index} className="flex items-start space-x-4">
@@ -1092,6 +1279,81 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      {/* Project Details Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="glass-dark border-white/20 text-white max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-green-300">
+              {selectedProject?.title}
+            </DialogTitle>
+            <DialogDescription className="text-white/70">
+              {selectedProject?.description}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 my-4">
+            <div className="flex flex-wrap gap-2">
+              {selectedProject?.tech.map((tech: string) => (
+                <Badge key={tech} variant="outline" className="border-green-300/30 text-green-300">
+                  {tech}
+                </Badge>
+              ))}
+            </div>
+            
+            <div className="space-y-2">
+              <h4 className="font-semibold text-white">Key Features:</h4>
+              <ul className="space-y-1">
+                {selectedProject?.details.map((detail: string, i: number) => (
+                  <li key={i} className="flex items-start text-white/80">
+                    <CheckCircle className="w-4 h-4 text-green-400 mr-2 mt-1 shrink-0" />
+                    <span>{detail}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <DialogFooter className="flex flex-row justify-end space-x-2">
+            {selectedProject?.github && (
+              <Button 
+                variant="outline" 
+                className="border-white/20 text-white hover:bg-white/10"
+                onClick={() => window.open(selectedProject.github, '_blank')}
+              >
+                <Github className="w-4 h-4 mr-2" />
+                Code
+              </Button>
+            )}
+            {selectedProject?.website && (
+              <Button 
+                variant="outline" 
+                className="border-white/20 text-white hover:bg-white/10"
+                onClick={() => window.open(selectedProject.website, '_blank')}
+              >
+                <Globe className="w-4 h-4 mr-2" />
+                Live Site
+              </Button>
+            )}
+            {selectedProject?.extraLink && (
+              <Button 
+                variant="outline" 
+                className="border-white/20 text-white hover:bg-white/10"
+                onClick={() => window.open(selectedProject.extraLink.url, '_blank')}
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                {selectedProject.extraLink.label}
+              </Button>
+            )}
+            <Button 
+              className="bg-green-600 hover:bg-green-700 text-white"
+              onClick={() => setIsModalOpen(false)}
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

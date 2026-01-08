@@ -200,12 +200,27 @@ npm run preview
   - Resolved critical customer issues
   - Optimized database queries for better performance
 
+### 6. Hartford Insurance
+- **Company**: EXL Service
+- **Duration**: May 2017 - May 2018
+- **Tech Stack**: Insurance Systems, Compliance
+- **Type**: US Insurance Operations
+- **Features**:
+  - Insurance cancellation processing
+  - Customer complaint management
+  - Duplicate complaint identification
+- **Key Achievements**:
+  - Processed high-volume cancellation requests
+  - Maintained high data integrity in complaint logging
+  - Ensured 100% compliance with internal policies
+
 ## 💼 Professional Experience
 
 - **Software Engineer** at PayTabs Group (Nov 2022 - Nov 2023)
 - **Software Engineer** at Paytm/Codeavik Technologies (Mar 2022 - Sep 2022)
 - **Freelancer** at Micole (Aug 2024 - Jan 2025)
 - **Process Advisor** at Kelly Services-Barclays (May 2018 - Sep 2020)
+- **Customer Service Executive** at EXL Service (May 2017 - May 2018)
 
 ## 🏆 Key Achievements
 

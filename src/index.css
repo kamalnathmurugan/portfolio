@@ -162,6 +162,11 @@
   animation: scroll-right 30s linear infinite;
 }
 
+.ticker-container:hover .scroll-left,
+.ticker-container:hover .scroll-right {
+  animation-play-state: paused;
+}
+
 .ticker-container {
   overflow: hidden;
   white-space: nowrap;
