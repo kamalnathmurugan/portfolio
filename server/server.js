@@ -43,59 +43,13 @@ app.post('/api/contact', async (req, res) => {
       });
     }
 
-    // Check if email credentials are configured
-    if (!process.env.EMAIL_PASS || process.env.EMAIL_PASS === 'your_gmail_app_password_here') {
-      console.log('Email not configured, simulating success');
-      console.log('EMAIL_USER:', process.env.EMAIL_USER);
-      console.log('EMAIL_PASS configured:', !!process.env.EMAIL_PASS);
-      return res.status(200).json({
-        success: true,
-        message: 'Message received! (Email service not configured)'
-      });
-    }
-
-    console.log('Attempting to send email...');
-
-    // Email content
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: 'kamalnath.muruga@gmail.com',
-      subject: `Portfolio Contact - ${name}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #22c55e; border-bottom: 2px solid #22c55e; padding-bottom: 10px;">
-            New Portfolio Contact Form Submission
-          </h2>
-          
-          <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #1e293b; margin-top: 0;">Contact Details:</h3>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-            <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
-          </div>
-          
-          <div style="background: #ffffff; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
-            <h3 style="color: #1e293b; margin-top: 0;">Message:</h3>
-            <p style="line-height: 1.6; color: #374151;">${message}</p>
-          </div>
-          
-          <div style="margin-top: 20px; padding: 15px; background: #ecfdf5; border-radius: 8px; border-left: 4px solid #22c55e;">
-            <p style="margin: 0; color: #166534; font-size: 14px;">
-              <strong>Sent from:</strong> Portfolio Website<br>
-              <strong>Time:</strong> ${new Date().toLocaleString()}
-            </p>
-          </div>
-        </div>
-      `
-    };
-
-    // Send email
-    await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully!');
-
+    // For now, just log the message and return success
+    console.log('Contact form data:', { name, email, phone, message });
+    
+    // Return success without sending email
     res.status(200).json({
       success: true,
-      message: 'Message sent successfully!'
+      message: 'Message received successfully!'
     });
 
   } catch (error) {
