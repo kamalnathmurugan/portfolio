@@ -11,18 +11,32 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Debug environment variables (without showing secrets)
+console.log('--- Email Service Environment Check ---');
+console.log('EMAIL_USER:', process.env.EMAIL_USER ? 'Configured' : 'Using default');
+console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? 'Configured' : 'Using default');
+console.log('EMAIL_TO:', process.env.EMAIL_TO ? 'Configured' : 'Using default');
+console.log('---------------------------------------');
+
 // Email transporter configuration
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.googlemail.com', // Alternate host often more reliable on cloud providers
+  port: 587,
+  secure: false, // use STARTTLS
   auth: {
     user: process.env.EMAIL_USER || 'kamalnath.muruga@gmail.com',
     pass: process.env.EMAIL_PASS || 'ovmi wxpi hjys jxcp'
   },
-  debug: true, // show debug output
-  logger: true, // log information in console
-  connectionTimeout: 10000, // 10 seconds
-  greetingTimeout: 10000,
-  socketTimeout: 15000
+  debug: true,
+  logger: true,
+  family: 4,
+  connectionTimeout: 30000, // Increase to 30s
+  greetingTimeout: 30000,
+  socketTimeout: 45000,
+  tls: {
+    // Do not fail on invalid certs
+    rejectUnauthorized: false
+  }
 });
 
 // Verify transporter configuration
@@ -79,7 +93,8 @@ app.post('/api/contact', async (req, res) => {
         message: emailError.message,
         code: emailError.code,
         command: emailError.command,
-        response: emailError.response
+        response: emailError.response,
+        stack: emailError.stack
       });
     }
 
